@@ -1,0 +1,10 @@
+{
+  "timePeriod": {"year": 2026, "month": 7},
+  "user": "octocat",
+  "usageItems": [
+    {"product": "Actions", "sku": "actions_linux", "grossQuantity": 3176.0, "unitType": "minutes"},
+    {"product": "Actions", "sku": "actions_linux_arm", "grossQuantity": 855.0, "unitType": "minutes"},
+    {"product": "Actions", "sku": "actions_storage", "grossQuantity": 2822.73, "unitType": "gigabyte-hours"},
+    {"product": "Git LFS", "sku": "git_lfs_storage", "grossQuantity": 73.95, "unitType": "gigabyte-hours"}
+  ]
+}
