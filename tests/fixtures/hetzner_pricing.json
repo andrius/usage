@@ -1,0 +1,13 @@
+{
+  "pricing": {
+    "currency": "EUR",
+    "server_type": [
+      {"id": 4, "name": "cx22",  "prices": [
+        {"location": "fsn1", "price_hourly": {"net": "0.0042", "gross": "0.0050"}, "price_monthly": {"net": "2.49", "gross": "2.96"}}
+      ]},
+      {"id": 9, "name": "cpx31", "prices": [
+        {"location": "nbg1", "price_hourly": {"net": "0.0163", "gross": "0.0194"}, "price_monthly": {"net": "9.69", "gross": "11.53"}}
+      ]}
+    ]
+  }
+}

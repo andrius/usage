@@ -1,0 +1,7 @@
+{
+  "servers": [
+    {"name": "web-1", "server_type": {"name": "cx22"}, "location": {"name": "fsn1"}},
+    {"name": "db-1",  "server_type": {"name": "cpx31"}, "location": {"name": "nbg1"}}
+  ],
+  "meta": {"pagination": {"page": 1, "per_page": 25, "next_page": null, "last_page": 1, "total_entries": 2}}
+}
