@@ -27,6 +27,19 @@ def parse_usage(text: str) -> list[Metric]:
     return metrics
 
 
+def _no_metric_warnings(stdout: str, stderr: str) -> list[str]:
+    """Explain why `claude -p /usage` yielded no subscription metrics."""
+    combined = stdout + "\n" + stderr
+    if "takes precedence" in combined or "Total cost:" in stdout:
+        return [
+            "subscription usage unavailable: claude ran in API-key/gateway mode "
+            "(an auth override such as ANTHROPIC_API_KEY takes precedence over "
+            "your claude.ai login). Run under your claude.ai subscription to see "
+            "session/weekly usage."
+        ]
+    return ["could not parse /usage; raw output follows:\n" + stdout]
+
+
 class ClaudeCodeSource:
     name = "claude_code"
     env_prefix = None
@@ -36,11 +49,15 @@ class ClaudeCodeSource:
             "claude", "-p", "/usage",
             stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE,
         )
-        stdout, _stderr = await proc.communicate()
-        text = stdout.decode()
-        metrics = parse_usage(text)
-        warnings = [] if metrics else ["could not parse /usage; raw output follows:\n" + text]
-        return SourceReport(source=self.name, metrics=metrics, warnings=warnings)
+        stdout, stderr = await proc.communicate()
+        out = stdout.decode(errors="replace")
+        metrics = parse_usage(out)
+        if metrics:
+            return SourceReport(source=self.name, metrics=metrics)
+        return SourceReport(
+            source=self.name,
+            warnings=_no_metric_warnings(out, stderr.decode(errors="replace")),
+        )
 
 
 source = ClaudeCodeSource()
