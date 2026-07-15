@@ -46,9 +46,13 @@ def test_fetch_paginates_servers():
     p2 = (FIXDIR / "hetzner_servers_p2.json").read_text()
     pri = (FIXDIR / "hetzner_pricing.json").read_text()
 
+    requested_pages: list[int] = []
+
     def handler(request: httpx.Request) -> httpx.Response:
         if request.url.path == "/v1/servers":
-            if "page=2" in str(request.url):
+            page = int(request.url.params.get("page", 1))
+            requested_pages.append(page)
+            if page == 2:
                 return httpx.Response(200, content=p2)
             return httpx.Response(200, content=p1)
         if request.url.path == "/v1/pricing":
@@ -65,3 +69,4 @@ def test_fetch_paginates_servers():
     assert len(rep.metrics) == 1
     m = rep.metrics[0]
     assert m.used == Decimal("14.49")
+    assert 2 in requested_pages, "page 2 was never requested - pagination not exercised"

@@ -16,13 +16,6 @@ def default_window() -> DateRange:
     return DateRange(since=until - timedelta(days=DEFAULT_WINDOW_DAYS), until=until)
 
 
-"""Run the selected sources (or all if none given). Returns reports + errors.
-
-Each source runs in isolation: a hard failure becomes an error string, never
-crashing the whole run. Unknown source names are reported, not raised.
-"""
-
-
 async def run_sources(
     selected: list[str],
     window: DateRange,
@@ -30,6 +23,11 @@ async def run_sources(
     env: dict | None = None,
     config: dict | None = None,
 ) -> tuple[list[SourceReport], list[str]]:
+    """Run the selected sources (or all if none given). Returns reports + errors.
+
+    Each source runs in isolation: a hard failure becomes an error string, never
+    crashing the whole run. Unknown source names are reported, not raised.
+    """
     registry = discover()
     names = [n for n in (selected or list(registry)) if n in registry]
     errors: list[str] = [

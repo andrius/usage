@@ -17,7 +17,7 @@ Each system is an isolated module (a "provider") behind a shared core that handl
 
 The default is a **fancy interactive TUI** with graphs. Alternative outputs via flags:
 
-- (default) interactive TUI with charts
+- (default) interactive TUI with gauges
 - `--cli` non-interactive formatted tables, one-shot report
 - `--text` plain text
 - `--json` machine-readable JSON
