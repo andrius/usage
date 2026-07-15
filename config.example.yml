@@ -1,0 +1,10 @@
+# Copy to config.yml and adjust. config.yml is gitignored (public repo).
+window:
+  default_days: 30
+sources:
+  github:
+    include: []        # org/user logins; empty = all orgs the token can see
+    exclude: []
+  hetzner:
+    include_projects: []
+  claude_code: {}
