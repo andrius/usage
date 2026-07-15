@@ -18,6 +18,9 @@ build/
 !.env.template
 !.env.example
 
+# this repo intentionally tracks its CLAUDE.md (overrides ~/.gitignore-global)
+!CLAUDE.md
+
 # caches
 .cache/
 .pytest_cache/
