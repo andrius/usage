@@ -60,7 +60,7 @@ usage/
 
 ## Design and planning
 
-Architecture and design decisions live in `docs/superpowers/specs/`. Implementation plans in `docs/superpowers/plans/`.
+Architecture and design decisions live in `docs/specs/`. Implementation plans in `docs/plans/`.
 
 ## How to add a provider
 
