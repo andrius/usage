@@ -30,3 +30,6 @@ build/
 .DS_Store
 *.swp
 .idea/
+
+# subagent-driven dev scratch (local only)
+.superpowers/
