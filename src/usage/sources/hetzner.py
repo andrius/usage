@@ -5,7 +5,7 @@ from decimal import Decimal
 
 from ..models import FetchContext, Metric, SourceReport
 
-API = "https://api.hetzner.com/v1"
+API = "https://api.hetzner.cloud/v1"
 DISCLAIMER = ("Estimated run-rate from servers only; volumes, load balancers, "
               "IPs, and traffic are not counted.")
 
@@ -13,14 +13,14 @@ DISCLAIMER = ("Estimated run-rate from servers only; volumes, load balancers, "
 def estimate_cost(servers: list[dict], pricing: dict) -> Decimal:
     """Sum monthly gross price over servers, joined by (server_type, location)."""
     price_by_key: dict[tuple[str, str], Decimal] = {}
-    for st in pricing.get("server_type", []):
+    for st in pricing.get("server_types", []):
         for p in st.get("prices", []):
             price_by_key[(st["name"], p["location"])] = Decimal(p["price_monthly"]["gross"])
     total = Decimal("0")
     for s in servers:
         key = (s["server_type"]["name"], s["location"]["name"])
         total += price_by_key.get(key, Decimal("0"))
-    return total
+    return total.quantize(Decimal("0.01"))  # Hetzner bills in EUR (2 decimals)
 
 
 class HetznerSource:
