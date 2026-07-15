@@ -1,4 +1,3 @@
-import pytest
 from usage.core import run_sources, default_window
 from usage.models import SourceReport
 

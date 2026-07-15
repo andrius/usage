@@ -17,7 +17,7 @@ usage
 
 Output modes:
 
-- (default) interactive TUI with charts
+- (default) interactive TUI with gauges
 - `--cli` formatted tables, one-shot report
 - `--text` plain text
 - `--json` machine-readable JSON

@@ -37,3 +37,28 @@ def test_fetch_uses_mock_transport():
     scopes = {m.scope for m in rep.metrics}
     assert "org:acme" in scopes
     assert any(s.startswith("user:") for s in scopes)
+
+
+def test_fetch_one_org_404_reports_warning():
+    data = FIX.read_text()
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        if request.url.path == "/user":
+            return httpx.Response(200, json={"login": "alice"})
+        if request.url.path == "/user/orgs":
+            return httpx.Response(200, json=[{"login": "acme"}, {"login": "dead"}])
+        if "/orgs/dead" in request.url.path:
+            return httpx.Response(404, json={"message": "Not Found"})
+        return httpx.Response(200, content=data)
+
+    transport = httpx.MockTransport(handler)
+    client = httpx.AsyncClient(transport=transport)
+    from usage.models import FetchContext, DateRange
+    from datetime import date
+    ctx = FetchContext(creds={"GITHUB_TOKEN": "t"}, config={},
+                       window=DateRange(since=date(2026,1,1), until=date(2026,1,31)), http=client)
+    import asyncio
+    rep = asyncio.run(GithubSource().fetch(ctx))
+    scopes = {m.scope for m in rep.metrics}
+    assert "org:acme" in scopes
+    assert any("dead billing: HTTP 404" in w for w in rep.warnings)

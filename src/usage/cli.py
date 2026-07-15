@@ -1,7 +1,7 @@
 """CLI entry point: parse flags, run sources, dispatch to a renderer.
 
-Default render is a rich table for the spike; the real default becomes the
-textual TUI once that layer lands. --json / --text / --cli select the others.
+Default output is the textual TUI. Use --json, --text, or --cli to select
+machine-readable JSON, plain text, or a formatted table respectively.
 """
 from __future__ import annotations
 

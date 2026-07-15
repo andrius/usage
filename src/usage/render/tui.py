@@ -11,7 +11,7 @@ from ..models import SourceReport
 
 
 def gauge(used: Decimal, limit: Decimal | None, width: int = 20) -> str:
-    if not limit or limit == 0:
+    if not limit:
         return ""
     frac = max(0.0, min(1.0, float(used) / float(limit)))
     filled = int(round(frac * width))

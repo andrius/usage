@@ -6,7 +6,10 @@ passes empty slices so the demo source runs with no setup.
 """
 from __future__ import annotations
 
+from datetime import date, timedelta
 from pathlib import Path
+
+from .models import DateRange
 
 
 def load_env(path: Path | str = ".env") -> dict[str, str]:
@@ -23,9 +26,6 @@ def load_env(path: Path | str = ".env") -> dict[str, str]:
         env[key.strip()] = value.strip().strip('"').strip("'")
     return env
 
-
-from datetime import date, timedelta
-from .models import DateRange
 
 try:
     import yaml

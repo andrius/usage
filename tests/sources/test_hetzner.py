@@ -34,6 +34,34 @@ def test_fetch_returns_cost_metric_with_warning():
     assert len(rep.metrics) == 1
     m = rep.metrics[0]
     assert m.dimension == "cost"
+    assert m.scope == "account"
+    assert m.label == "Estimated monthly cost"
     assert m.used == Decimal("14.49")
     assert m.unit == "EUR"
-    assert rep.warnings  # servers-only disclaimer
+    assert any("Estimated run-rate" in w for w in rep.warnings)
+
+
+def test_fetch_paginates_servers():
+    p1 = (FIXDIR / "hetzner_servers_p1.json").read_text()
+    p2 = (FIXDIR / "hetzner_servers_p2.json").read_text()
+    pri = (FIXDIR / "hetzner_pricing.json").read_text()
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        if request.url.path == "/v1/servers":
+            if "page=2" in str(request.url):
+                return httpx.Response(200, content=p2)
+            return httpx.Response(200, content=p1)
+        if request.url.path == "/v1/pricing":
+            return httpx.Response(200, content=pri)
+        return httpx.Response(404)
+
+    client = httpx.AsyncClient(transport=httpx.MockTransport(handler))
+    from usage.models import FetchContext, DateRange
+    from datetime import date
+    ctx = FetchContext(creds={"HETZNER_API_TOKEN": "t"}, config={},
+                       window=DateRange(since=date(2026, 1, 1), until=date(2026, 1, 31)), http=client)
+    import asyncio
+    rep = asyncio.run(HetznerSource().fetch(ctx))
+    assert len(rep.metrics) == 1
+    m = rep.metrics[0]
+    assert m.used == Decimal("14.49")

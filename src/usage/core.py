@@ -16,6 +16,13 @@ def default_window() -> DateRange:
     return DateRange(since=until - timedelta(days=DEFAULT_WINDOW_DAYS), until=until)
 
 
+"""Run the selected sources (or all if none given). Returns reports + errors.
+
+Each source runs in isolation: a hard failure becomes an error string, never
+crashing the whole run. Unknown source names are reported, not raised.
+"""
+
+
 async def run_sources(
     selected: list[str],
     window: DateRange,

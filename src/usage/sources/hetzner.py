@@ -29,11 +29,19 @@ class HetznerSource:
 
     async def fetch(self, ctx: FetchContext) -> SourceReport:
         headers = {"Authorization": f"Bearer {ctx.creds.get('HETZNER_API_TOKEN')}"}
-        srv = await ctx.http.get(f"{API}/servers", headers=headers)
-        srv.raise_for_status()
         pri = await ctx.http.get(f"{API}/pricing", headers=headers)
         pri.raise_for_status()
-        servers = srv.json().get("servers", [])
+        servers: list[dict] = []
+        page = 1
+        while True:
+            r = await ctx.http.get(f"{API}/servers", params={"page": page, "per_page": 50}, headers=headers)
+            r.raise_for_status()
+            data = r.json()
+            servers.extend(data.get("servers", []))
+            nxt = (data.get("meta") or {}).get("pagination", {}).get("next_page")
+            if not nxt:
+                break
+            page = nxt
         cost = estimate_cost(servers, pri.json().get("pricing", {}))
         return SourceReport(
             source=self.name,
