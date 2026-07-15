@@ -14,6 +14,7 @@ from .core import run_sources
 from .render import json as r_json
 from .render import table as r_table
 from .render import text as r_text
+from .render import tui as r_tui
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -50,8 +51,10 @@ def main(argv: list[str] | None = None) -> int:
         print(r_json.render(reports))
     elif args.text:
         print(r_text.render(reports))
+    elif args.cli:
+        r_table.render(reports, errors)
     else:
-        r_table.render(reports, errors)   # TUI lands in Task 9 and replaces this branch
+        r_tui.render(reports, errors)   # default: textual TUI
 
     return 1 if errors else 0
 
