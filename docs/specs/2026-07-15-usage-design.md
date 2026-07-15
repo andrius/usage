@@ -1,7 +1,12 @@
+---
+name: usage-v1-design
+status: approved
+created: 2026-07-15T09:09:27Z
+updated: 2026-07-15T09:09:27Z
+---
+
 # usage - design spec
 
-- **Date:** 2026-07-15
-- **Status:** Approved (v1)
 - **Repo:** [andrius/usage](https://github.com/andrius/usage) (public), bare git + worktree; canonical worktree `main/`
 
 ## Problem
