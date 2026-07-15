@@ -4,7 +4,7 @@ from __future__ import annotations
 from ..models import SourceReport
 
 
-def render(reports: list[SourceReport]) -> str:
+def render(reports: list[SourceReport], errors: list[str] | None = None) -> str:
     lines: list[str] = []
     for r in reports:
         lines.append(f"[{r.source}]")
@@ -17,4 +17,6 @@ def render(reports: list[SourceReport]) -> str:
             row += f" {m.unit} ({m.dimension})"
             lines.append(row)
         lines.append("")
+    for e in errors or []:
+        lines.append(f"error: {e}")
     return "\n".join(lines).rstrip()

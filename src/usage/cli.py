@@ -48,9 +48,9 @@ def main(argv: list[str] | None = None) -> int:
     reports, errors = asyncio.run(run_sources(selected, window, config=config))
 
     if args.json:
-        print(r_json.render(reports))
+        print(r_json.render(reports, errors))
     elif args.text:
-        print(r_text.render(reports))
+        print(r_text.render(reports, errors))
     elif args.cli:
         r_table.render(reports, errors)
     else:
