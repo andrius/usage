@@ -22,3 +22,35 @@ def load_env(path: Path | str = ".env") -> dict[str, str]:
         key, _, value = line.partition("=")
         env[key.strip()] = value.strip().strip('"').strip("'")
     return env
+
+
+from datetime import date, timedelta
+from .models import DateRange
+
+try:
+    import yaml
+except ImportError:  # pragma: no cover
+    yaml = None
+
+DEFAULT_WINDOW_DAYS = 30
+
+
+def load_config(path: "str | Path") -> dict:
+    p = Path(path)
+    if not p.exists() or yaml is None:
+        return {}
+    return yaml.safe_load(p.read_text()) or {}
+
+
+def window_from_config(config: dict) -> DateRange:
+    days_cfg = ((config or {}).get("window") or {}).get("default_days")
+    days = int(days_cfg) if days_cfg else DEFAULT_WINDOW_DAYS
+    until = date.today()
+    return DateRange(since=until - timedelta(days=days), until=until)
+
+
+def slice_creds(env: dict, prefix: "str | None") -> dict:
+    if not prefix:
+        return {}
+    mark = prefix + "_"
+    return {k: v for k, v in env.items() if k.startswith(mark)}

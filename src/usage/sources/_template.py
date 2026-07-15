@@ -18,6 +18,7 @@ from ..models import FetchContext, SourceReport
 
 class TemplateSource:
     name = "template"
+    env_prefix = None
 
     async def fetch(self, ctx: FetchContext) -> SourceReport:
         # token = ctx.creds.get("token")

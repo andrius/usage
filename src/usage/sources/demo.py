@@ -13,6 +13,7 @@ from ..models import FetchContext, Metric, SourceReport
 
 class DemoSource:
     name = "demo"
+    env_prefix = None
 
     async def fetch(self, ctx: FetchContext) -> SourceReport:
         w = ctx.window

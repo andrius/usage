@@ -9,7 +9,8 @@ import argparse
 import asyncio
 from datetime import date
 
-from .core import default_window, run_sources
+from .config import load_config, window_from_config
+from .core import run_sources
 from .render import json as r_json
 from .render import table as r_table
 from .render import text as r_text
@@ -32,24 +33,25 @@ def build_parser() -> argparse.ArgumentParser:
 
 def main(argv: list[str] | None = None) -> int:
     args = build_parser().parse_args(argv)
-
-    window = default_window()
+    config = load_config("config.yml")
     if args.since or args.until:
-        window = type(window)(
-            since=date.fromisoformat(args.since) if args.since else window.since,
-            until=date.fromisoformat(args.until) if args.until else window.until,
+        base = window_from_config(config)
+        window = type(base)(
+            since=date.fromisoformat(args.since) if args.since else base.since,
+            until=date.fromisoformat(args.until) if args.until else base.until,
         )
+    else:
+        window = window_from_config(config)
 
     selected = [s.strip() for s in args.sources.split(",") if s.strip()]
-    reports, errors = asyncio.run(run_sources(selected, window))
+    reports, errors = asyncio.run(run_sources(selected, window, config=config))
 
     if args.json:
         print(r_json.render(reports))
     elif args.text:
         print(r_text.render(reports))
     else:
-        # spike default; will be replaced by the textual TUI.
-        r_table.render(reports, errors)
+        r_table.render(reports, errors)   # TUI lands in Task 9 and replaces this branch
 
     return 1 if errors else 0
 
