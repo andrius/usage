@@ -1,0 +1,29 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+dist/
+build/
+
+# Local-only AI state and secrets (real files live in .workspace/, symlinked in)
+.ai-local.md
+.ai-secrets.md
+.env
+.env.local
+.env.*.local
+
+# keep templates tracked
+!.env.template
+!.env.example
+
+# caches
+.cache/
+.pytest_cache/
+.ruff_cache/
+
+# OS / editor
+.DS_Store
+*.swp
+.idea/
