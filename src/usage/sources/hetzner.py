@@ -43,9 +43,10 @@ class HetznerSource:
                 break
             page = nxt
         cost = estimate_cost(servers, pri.json().get("pricing", {}))
+        scope = (ctx.config or {}).get("account") or "account"
         return SourceReport(
             source=self.name,
-            metrics=[Metric(source="hetzner", scope="account",
+            metrics=[Metric(source="hetzner", scope=scope,
                             label="Estimated monthly cost", dimension="cost",
                             used=cost, unit="EUR")],
             warnings=[DISCLAIMER],

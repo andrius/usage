@@ -6,5 +6,6 @@ sources:
     include: []        # org/user logins; empty = all orgs the token can see
     exclude: []
   hetzner:
+    account: ""        # label shown as the scope; hcloud tokens expose no project name
     include_projects: []
   claude_code: {}

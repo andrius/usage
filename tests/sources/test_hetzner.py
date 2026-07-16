@@ -70,3 +70,25 @@ def test_fetch_paginates_servers():
     m = rep.metrics[0]
     assert m.used == Decimal("14.49")
     assert 2 in requested_pages, "page 2 was never requested - pagination not exercised"
+
+
+def test_fetch_uses_configured_account_as_scope():
+    srv = (FIXDIR / "hetzner_servers.json").read_text()
+    pri = (FIXDIR / "hetzner_pricing.json").read_text()
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        if request.url.path == "/v1/servers":
+            return httpx.Response(200, content=srv)
+        if request.url.path == "/v1/pricing":
+            return httpx.Response(200, content=pri)
+        return httpx.Response(404)
+
+    client = httpx.AsyncClient(transport=httpx.MockTransport(handler))
+    from usage.models import FetchContext, DateRange
+    from datetime import date
+    ctx = FetchContext(creds={"HETZNER_API_TOKEN": "t"}, config={"account": "ak-cloud"},
+                       window=DateRange(since=date(2026, 1, 1), until=date(2026, 1, 31)), http=client)
+    import asyncio
+    rep = asyncio.run(HetznerSource().fetch(ctx))
+    assert rep.metrics[0].scope == "ak-cloud"
+
